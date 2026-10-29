@@ -1,33 +1,162 @@
 from django.shortcuts import render
-from django.db import transaction
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import ValidationError
-from .models import Trip
-from .serializers import TripSerializer
-from .recommendation import recommend_destination
-from itineraries.models import Itinerary
-from itineraries.planner import generate_itinerary
+from rest_framework.exceptions import NotFound,ValidationError
+from .models import Trip, TripStop
+from .serializers import TripSerializer,TripStopSerializer
+from subscriptions.models import Subscription
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status as http_status
+from payments.models import TripPayment
 
 # Create your views here.
 
-
-class TripCreateView(generics.CreateAPIView):
+class TripListCreateView(generics.ListCreateAPIView):
     serializer_class = TripSerializer
     permission_classes = [IsAuthenticated]
 
-    @transaction.atomic
+    def get_queryset(self):
+        return Trip.objects.filter(user=self.request.user).order_by("-created_at")
+    
     def perform_create(self, serializer):
-        start_date = serializer.validated_data["start_date"]
-        end_date = serializer.validated_data["end_date"]
-        budget = serializer.validated_data["budget"]
-        origin = serializer.validated_data["origin"]
+        subscription, _ = Subscription.objects.get_or_create(user=self.request.user,defaults={"plan": "free", "status": "free"})
+        is_premium = (subscription.plan == "premium"and subscription.status == "active")
+        
+        if is_premium:
+            serializer.save(user=self.request.user,requires_payment=False)
+            return
 
-        recommendation = recommend_destination(origin,start_date,end_date,budget)
+        if subscription.free_trips_created < 3:
+            serializer.save(user=self.request.user,requires_payment=False)
 
-        if recommendation is None:
-            raise ValidationError("No destination fits your budget for these dates")
+            subscription.free_trips_created += 1
+            subscription.save(update_fields=["free_trips_created"])
 
-        trip = serializer.save(user=self.request.user, destination=recommendation["name"])
-        itinerary_items = generate_itinerary(trip)
-        Itinerary.objects.bulk_create([Itinerary(**item) for item in itinerary_items])
+        else:
+            serializer.save(user=self.request.user,requires_payment=True)
+
+
+class TripDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TripSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "title"
+    lookup_url_kwarg = "trip_title"
+
+    def get_queryset(self):
+        return Trip.objects.filter(
+            user=self.request.user
+        )
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+class TripStopListCreateView(generics.ListCreateAPIView):
+    serializer_class = TripStopSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_trip(self):
+        try:
+            return Trip.objects.get(
+                title=self.kwargs["trip_title"],
+                user=self.request.user,
+            )
+        except Trip.DoesNotExist:
+            raise NotFound("Trip not found.")
+
+    def get_queryset(self):
+        trip = self.get_trip()
+        return TripStop.objects.filter(trip=trip).order_by("order")
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["trip"] = self.get_trip()
+        return context
+
+    def perform_create(self, serializer):
+        serializer.save(trip=self.get_trip())
+
+
+class TripStopDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TripStopSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+    lookup_url_kwarg = "stop_id"
+
+    def get_queryset(self):
+        return TripStop.objects.filter(
+            trip__user=self.request.user,
+            trip__title=self.kwargs["trip_title"],
+        )
+
+
+class TripActivateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, trip_title):
+        try:
+            trip = Trip.objects.get(title__iexact=trip_title,user=request.user)
+        except Trip.DoesNotExist:
+            raise NotFound("Trip not found.")
+
+        if trip.status == "active":
+            return Response({"detail": "This trip is already active."},status=http_status.HTTP_200_OK)
+
+        if trip.status in ["completed", "cancelled"]:
+            raise ValidationError({"detail": "Completed or cancelled trips cannot be activated."})
+
+        subscription, _ = Subscription.objects.get_or_create(user=request.user,defaults={"plan": "free", "status": "free"})
+        is_premium = (subscription.plan == "premium" and subscription.status == "active")
+
+        if trip.requires_payment and not is_premium:
+            payment_exists = TripPayment.objects.filter(user=request.user,trip=trip,status="paid").exists()
+
+            if not payment_exists:
+                raise ValidationError({"detail":"Payment is required before activating this trip."})
+            
+        if not is_premium:
+            another_active_trip = Trip.objects.filter(user=request.user,status="active",).exclude(pk=trip.pk).exists()
+
+            if another_active_trip:
+                raise ValidationError({
+                    "detail": (
+                        "You already have an active trip. "
+                        "Complete or cancel it before activating another."
+                    )
+                })
+
+        trip.status = "active"
+        trip.save(update_fields=["status"])
+
+        return Response({
+            "detail": "Trip activated successfully.",
+            "title": trip.title,
+            "status": trip.status,
+        })
+
+class TripCompleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, trip_title):
+        try:
+            trip = Trip.objects.get(
+                title__iexact=trip_title,
+                user=request.user,
+            )
+        except Trip.DoesNotExist:
+            raise NotFound("Trip not found.")
+
+        if trip.status != "active":
+            raise ValidationError({
+                "detail": "Only an active trip can be completed."
+            })
+
+        trip.status = "completed"
+        trip.save(update_fields=["status"])
+
+        return Response({
+            "detail": "Trip completed successfully.",
+            "title": trip.title,
+            "status": trip.status,
+        })
+

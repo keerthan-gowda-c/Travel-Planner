@@ -2,6 +2,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 import re
+from subscriptions.models import Subscription
+from django.db import transaction
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -22,14 +24,19 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         full_name = validated_data.pop("full_name").split(maxsplit=1)
 
-        return User.objects.create_user(
-            username=validated_data["username"],
-            email=validated_data["email"],
-            password=validated_data["password"],
-            first_name=full_name[0],
-            last_name=full_name[1] if len(full_name) > 1 else ""
-        )
+        with transaction.atomic():
+            user = User.objects.create_user(
+                username=validated_data["username"],
+                email=validated_data["email"],
+                password=validated_data["password"],
+                first_name=full_name[0],
+                last_name=full_name[1] if len(full_name) > 1 else ""
+            )
 
+        Subscription.objects.create(user=user,plan="free",status="free")
+
+        return user 
+    
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["full_name"] = instance.get_full_name()

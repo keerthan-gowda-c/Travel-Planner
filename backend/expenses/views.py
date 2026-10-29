@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied, NotFound
@@ -26,6 +25,15 @@ class ExpenseListCreateView(generics.ListCreateAPIView):
 
         serializer.save()
 
+
+class ExpenseDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ExpenseSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+    lookup_url_kwarg = "expense_id"
+
+    def get_queryset(self):
+        return Expenses.objects.filter(trips__user=self.request.user)
 
 class ExpenseSummaryView(generics.GenericAPIView):
     permission_classes=[IsAuthenticated]
