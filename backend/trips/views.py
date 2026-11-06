@@ -3,12 +3,13 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound,ValidationError
 from .models import Trip, TripStop
-from .serializers import TripSerializer,TripStopSerializer
+from .serializers import TripSerializer,TripStopSerializer, RecommendationRequestSerializer
 from subscriptions.models import Subscription
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status as http_status
 from payments.models import TripPayment
+from .recommendation import recommend_destination
 
 # Create your views here.
 
@@ -160,3 +161,41 @@ class TripCompleteView(APIView):
             "status": trip.status,
         })
 
+class DestinationRecommendationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = RecommendationRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+
+        subscription = Subscription.objects.get_or_create(user=request.user,defaults={"plan":"free", "status":"free"})
+
+        is_premium = (subscription.plan == "premium" and subscription.status == "active")
+
+        if not is_premium:
+            return Response({
+                "detail":("Destination recommendation are available only for Premium user. Please upgrade your plan" )
+            }, status=http_status.HTTP_403_FORBIDDEN)
+
+        try:
+            recommendations = recommend_destination(origin=data["origin"],
+                start_date=data["start_date"],
+                end_date=data["end_date"],
+                budget=data["budget"],
+                travel_mode=data["travel_mode"],)
+
+        except ValueError as error:
+            raise ValidationError({"origin": str(error)})
+
+        if not recommendations:
+            return Response(
+                {"detail": "No destinations found within your budget.","recommendations": [],},
+                status=http_status.HTTP_200_OK,
+            )
+
+        return Response(
+            {"origin": data["origin"],"recommendations": recommendations,},
+            status=http_status.HTTP_200_OK,
+        )

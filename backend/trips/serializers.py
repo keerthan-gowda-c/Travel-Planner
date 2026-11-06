@@ -1,14 +1,14 @@
 from rest_framework import serializers
 from .models import Trip, TripStop
 from subscriptions.models import Subscription
-
+from decimal import Decimal
 
 class TripSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
     destination = serializers.CharField(max_length=100)
     class Meta:
         model = Trip
-        fields = ["id","title","origin","destination","start_date","end_date","budget","status","requires_payment","created_at"]
+        fields = ["id","title","origin","destination","image_url","start_date","end_date","budget","status","requires_payment","created_at"]
         read_only_fields = ["id","status","requires_payment","created_at"]
 
     def validate(self, data):
@@ -37,7 +37,7 @@ class TripSerializer(serializers.ModelSerializer):
                     )
                 })
 
-            return data
+        return data
 
 
 
@@ -71,5 +71,26 @@ class TripStopSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     "arrival_date": "Stop date must be within the trip dates."
                 })
+
+        return data
+
+
+class RecommendationRequestSerializer(serializers.Serializer):
+    TRANSPORT_CHOICES = [
+        ("train", "Train"),
+        ("bus", "Bus"),
+        ("car", "Car"),
+        ("flight", "Flight"),
+    ]
+
+    origin = serializers.CharField(max_length=100)
+    start_date = serializers.DateField()
+    end_date = serializers.DateField()
+    budget = serializers.DecimalField(max_digits=12,decimal_places=2,min_value=Decimal("0.01"))
+    travel_mode = serializers.ChoiceField(choices=TRANSPORT_CHOICES)
+
+    def validate(self, data):
+        if data["end_date"] < data["start_date"]:
+            raise serializers.ValidationError({"end_date":"End date must be on or after the start date."})
 
         return data

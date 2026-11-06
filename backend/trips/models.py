@@ -14,6 +14,7 @@ class Trip(models.Model):
     title = models.CharField(max_length=100)
     origin = models.CharField(max_length=100)
     destination = models.CharField(max_length=100, blank=True)
+    image_url = models.URLField(blank=True,null=True)
     start_date = models.DateField()
     end_date = models.DateField()
     budget =models. DecimalField(max_digits=10, decimal_places=2)
