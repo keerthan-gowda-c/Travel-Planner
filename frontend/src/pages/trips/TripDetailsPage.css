@@ -1,0 +1,324 @@
+
+.trip-details-page {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.back-to-trips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.back-to-trips:hover {
+    color: #2563eb;
+}
+
+.trip-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.trip-details-status {
+    display: inline-block;
+    padding: 6px 11px;
+    margin-bottom: 12px;
+    border-radius: 20px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.trip-details-header h1 {
+    color: #172554;
+    font-size: 27px;
+    margin-bottom: 9px;
+}
+
+.trip-details-header p {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.edit-trip-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #334155;
+    font-size: 13px;
+}
+
+/* Banner */
+.trip-details-banner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 19px;
+    border-radius: 11px;
+    background: #172554;
+    color: white;
+}
+
+.trip-details-banner div {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+}
+
+/* Overview */
+.trip-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.trip-overview-card {
+    padding: 21px;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: white;
+}
+
+.overview-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 14px;
+    border-radius: 9px;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.trip-overview-card span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.trip-overview-card h2 {
+    margin-top: 8px;
+    color: #172554;
+    font-size: 23px;
+}
+
+/* Common Sections */
+.trip-budget-section,
+.trip-itinerary-section,
+.trip-expense-categories {
+    padding: 23px;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: white;
+}
+
+.trip-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.trip-section-heading h3 {
+    color: #172554;
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.trip-section-heading p {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+/* Budget */
+.trip-section-heading > strong {
+    color: #2563eb;
+    font-size: 13px;
+}
+
+.trip-budget-progress {
+    width: 100%;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #e2e8f0;
+}
+
+.trip-budget-progress div {
+    height: 100%;
+    border-radius: inherit;
+    background: #2563eb;
+}
+
+.trip-budget-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* Itinerary */
+.trip-itinerary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.trip-day-card {
+    display: flex;
+    gap: 18px;
+    padding: 18px;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+}
+
+.trip-day-label {
+    min-width: 65px;
+}
+
+.trip-day-label span {
+    display: inline-block;
+    padding: 7px 10px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.trip-day-content {
+    flex: 1;
+}
+
+.trip-day-content h4 {
+    margin-bottom: 13px;
+    color: #334155;
+    font-size: 14px;
+}
+
+.trip-activity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 11px;
+}
+
+.activity-dot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #2563eb;
+}
+
+.trip-activity p {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* Expenses */
+.expense-category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 13px;
+}
+
+.expense-category-grid > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 17px;
+    border: 1px solid #f1f5f9;
+    border-radius: 9px;
+}
+
+.expense-category-grid svg {
+    color: #2563eb;
+}
+
+.expense-category-grid span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.expense-category-grid strong {
+    color: #172554;
+    font-size: 16px;
+}
+
+/* Not Found */
+.trip-not-found {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.trip-not-found h2 {
+    color: #172554;
+    margin-bottom: 10px;
+}
+
+.trip-not-found p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.trip-not-found button {
+    padding: 11px 17px;
+    border: none;
+    border-radius: 7px;
+    background: #2563eb;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+    .trip-overview-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .expense-category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .trip-details-header {
+        flex-direction: column;
+    }
+
+    .trip-details-banner {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .trip-overview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trip-day-card {
+        flex-direction: column;
+    }
+
+    .trip-budget-labels {
+        flex-direction: column;
+    }
+}

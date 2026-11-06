@@ -1,0 +1,344 @@
+
+.premium-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* Header */
+.premium-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.premium-welcome-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #7c3aed;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.premium-dashboard-header h1 {
+    font-size: 27px;
+    color: #172554;
+    margin-bottom: 7px;
+}
+
+.premium-dashboard-header p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.premium-create-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #6d28d9;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.premium-create-btn:hover {
+    background: #5b21b6;
+    transform: translateY(-2px);
+}
+
+/* Stats */
+.premium-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.premium-stat-card {
+    background: white;
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.premium-stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.premium-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.premium-stat-card h2 {
+    margin-top: 16px;
+    margin-bottom: 6px;
+    color: #172554;
+    font-size: 26px;
+}
+
+.premium-stat-card p {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+/* Main Content */
+.premium-dashboard-content {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 20px;
+}
+
+.premium-section-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 23px;
+    min-width: 0;
+}
+
+.premium-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.premium-section-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #172554;
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.premium-section-header p {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.premium-text-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: transparent;
+    color: #6d28d9;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.premium-text-btn:hover {
+    color: #4c1d95;
+}
+
+/* Upcoming Trips */
+.premium-trip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.premium-trip-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+}
+
+.premium-trip-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.premium-trip-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.premium-trip-info h4 {
+    color: #1e293b;
+    font-size: 14px;
+}
+
+.premium-trip-info span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.premium-trip-status {
+    padding: 6px 9px;
+    border-radius: 20px;
+    background: #f3e8ff;
+    color: #7c3aed;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Quick Actions */
+.premium-quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.premium-quick-actions button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: white;
+    color: #475569;
+    font-size: 13px;
+    text-align: left;
+    transition: 0.2s ease;
+}
+
+.premium-quick-actions button svg:first-child {
+    color: #7c3aed;
+}
+
+.premium-quick-actions button svg:last-child {
+    margin-left: auto;
+    color: #94a3b8;
+}
+
+.premium-quick-actions button:hover {
+    border-color: #c4b5fd;
+    background: #faf5ff;
+}
+
+/* Insights */
+.premium-insights-section {
+    background: white;
+    padding: 23px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.premium-insights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.premium-insight-card {
+    padding: 20px;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+}
+
+.premium-insight-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 15px;
+    border-radius: 9px;
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.premium-insight-card h4 {
+    color: #334155;
+    font-size: 14px;
+    margin-bottom: 9px;
+}
+
+.premium-insight-card p {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.premium-insight-card strong {
+    display: block;
+    color: #172554;
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .premium-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .premium-dashboard-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .premium-dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .premium-create-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .premium-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .premium-insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .premium-section-card,
+    .premium-insights-section {
+        padding: 17px;
+    }
+
+    .premium-trip-item {
+        flex-wrap: wrap;
+    }
+
+    .premium-trip-status {
+        margin-left: 56px;
+    }
+}
