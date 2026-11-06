@@ -37,6 +37,29 @@ class TripListCreateView(generics.ListCreateAPIView):
         else:
             serializer.save(user=self.request.user,requires_payment=True)
 
+class DashboardTripListView(generics.ListAPIView):
+    serializer_class = TripSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        subscription, _ = Subscription.objects.get_or_create(
+            user=self.request.user,
+            defaults={"plan": "free", "status": "free"}
+        )
+
+        is_premium = (
+            subscription.plan == "premium"
+            and subscription.status == "active"
+        )
+
+        trips = Trip.objects.filter(user=self.request.user)
+
+        if is_premium:
+            return trips.order_by("-created_at")
+
+        return trips.filter(
+            requires_payment=False
+        ).order_by("-created_at")[:3]
 
 class TripDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TripSerializer
@@ -170,7 +193,7 @@ class DestinationRecommendationView(APIView):
 
         data = serializer.validated_data
 
-        subscription = Subscription.objects.get_or_create(user=request.user,defaults={"plan":"free", "status":"free"})
+        subscription, _ = Subscription.objects.get_or_create(user=request.user,defaults={"plan":"free", "status":"free"})
 
         is_premium = (subscription.plan == "premium" and subscription.status == "active")
 
