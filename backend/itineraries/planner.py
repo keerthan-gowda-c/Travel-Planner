@@ -60,18 +60,18 @@ def generate_itinerary(trip):
     if not activities:
         return []
 
-    total_days = (trip.end_date - trip.start_date).days
+    total_days = (trip.end_date - trip.start_date).days + 1
     itinerary = []
 
-    for day in range(1, total_days+1):
-        activity = activities[(day -1) % len(activities)]
+    for day in range(1, total_days + 1):
+        activity = activities[(day - 1) % len(activities)]
 
         itinerary.append({
-            "trip":trip,
-            "day_number":day,
-            "title":activity["title"],
-            "description":activity["description"],
-            "estimated_cost":activity["estimated_cost"]
+            "trip": trip,
+            "day_number": day,
+            "title": activity["title"],
+            "description": activity["description"],
+            "estimated_cost": activity["estimated_cost"],
         })
 
     return itinerary

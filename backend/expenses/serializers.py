@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import Expenses
+from .models import Expense
 from trips.models import Trip
 
 
@@ -11,14 +11,14 @@ class StringPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
 
 class ExpenseSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
-    trips = StringPrimaryKeyRelatedField(queryset=Trip.objects.all())
+    trip = StringPrimaryKeyRelatedField(queryset=Trip.objects.all())
 
     class Meta:
-        model = Expenses
-        fields = ["id","trips","category","description","amount","expense_date"]
+        model = Expense
+        fields = ["id","trip","category","description","amount","expense_date"]
         read_only_fields = ["id"]
 
-    def validate_trips(self,trip):
+    def validate_trip(self,trip):
         request = self.context.get("request")
 
         if request and trip.user != request.user:
@@ -34,7 +34,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
     def validate(self, data):
         expense = self.instance
 
-        trip = data.get("trips",expense.trips if expense else None)
+        trip = data.get("trip",expense.trip if expense else None)
         expense_date = data.get("expense_date",expense.expense_date if expense else None)
 
         if trip and expense_date:

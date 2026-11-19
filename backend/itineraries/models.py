@@ -3,7 +3,7 @@ from trips.models import Trip
 
 # Create your models here.
 class Itinerary(models.Model):
-    trip = models.ForeignKey(Trip, on_delete=models.CASCADE,related_name="iteneraries")
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE,related_name="itineraries")
     day_number = models.PositiveIntegerField()
     title = models.CharField(max_length=150)
     description = models.TextField()

@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from trips.models import Trip
 from .models import Itinerary
 from .serializers import ItinerarySerializer
+from trips.access import has_trip_access
 # Create your views here.
 
 class ItineraryListCreateView(generics.ListCreateAPIView):
@@ -15,9 +16,14 @@ class ItineraryListCreateView(generics.ListCreateAPIView):
         trip_title = self.kwargs["trip_title"]
 
         try:
-            return Trip.objects.get(title__iexact=trip_title,user=self.request.user)
+            trip = Trip.objects.get(title__iexact=trip_title,user=self.request.user)
         except Trip.DoesNotExist:
             raise NotFound("Trip not found.")
+
+        if not has_trip_access(self.request.user, trip):
+            raise PermissionDenied("Payment is required to access this trip's itinerary")
+
+        return trip
 
     def get_queryset(self):
         trip = self.get_trip()
@@ -40,13 +46,14 @@ class ItineraryDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = "itinerary_id"
 
     def get_queryset(self):
-        return Itinerary.objects.filter(
-            trip__title__iexact=self.kwargs["trip_title"],
-            trip__user=self.request.user,
-        )
+        try:
+            trip = Trip.objects.get(title__iexact=self.kwargs["trip_title"],user=self.request.user)
+        except Trip.DoesNotExist:
+            raise NotFound("Trip not found.")
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["trip"] = self.get_object().first().trip
-        return context
+        if not has_trip_access(self.request.user, trip):
+            raise PermissionDenied("Payment is required to access this trip's itinerary.")
+
+        return Itinerary.objects.filter(trip=trip) 
+
     

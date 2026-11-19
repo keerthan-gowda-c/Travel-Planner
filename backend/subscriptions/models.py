@@ -23,9 +23,11 @@ class Subscription(models.Model):
     billing_period = models.CharField(max_length=20,choices=BILLING_CHOICES,blank=True)
     status = models.CharField(max_length=20,choices=STATUS_CHOICES,default="free")
     free_trips_created = models.PositiveIntegerField(default=0)
+    extra_trip_credits = models.PositiveIntegerField(default=0)
     razorpay_subscription_id = models.CharField(max_length=100,blank=True,null=True,unique=True)
     current_period_start = models.DateTimeField(blank=True,null=True)
     current_period_end = models.DateTimeField(blank=True,null=True)
+    cancel_at_period_end = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

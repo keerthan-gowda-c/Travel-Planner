@@ -5,7 +5,7 @@ from decimal import Decimal
 
 class TripSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
-    destination = serializers.CharField(max_length=100)
+    destination = serializers.CharField(max_length=100,required=False,allow_blank=True)
     class Meta:
         model = Trip
         fields = ["id","title","origin","destination","image_url","start_date","end_date","budget","status","requires_payment","created_at"]

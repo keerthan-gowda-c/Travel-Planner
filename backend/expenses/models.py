@@ -3,7 +3,7 @@ from trips.models import Trip
 # Create your models here.
 
 
-class Expenses(models.Model):
+class Expense(models.Model):
     CATEGORY_CHOICES =  [
         ("transport", "Transport"),
         ("accommodation", "Accommodation"),
@@ -12,7 +12,7 @@ class Expenses(models.Model):
         ("other", "Other"),
     ]
 
-    trips = models.ForeignKey(Trip,on_delete=models.CASCADE,related_name="expenses")
+    trip = models.ForeignKey(Trip,on_delete=models.CASCADE,related_name="expenses")
     category = models.CharField(max_length=20,choices=CATEGORY_CHOICES)
     description = models.CharField(max_length=200)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
