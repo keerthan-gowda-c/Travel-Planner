@@ -11,7 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from subscriptions.models import Subscription
-from .serializers import RegisterSerializer, EmailTokenObtainPairSerializer
+from .serializers import RegisterSerializer, EmailTokenObtainPairSerializer, UserProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
@@ -104,3 +104,14 @@ class UserProfileView(APIView):
                 "billing_period": subscription.billing_period,
             }
         }, status=http_status.HTTP_200_OK)
+
+    def patch(self,request):
+        serializer = UserProfileSerializer(request.user,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message":"Profile updated successfully.",
+                "user":serializer.data
+            },status=http_status.HTTP_200_OK)
+
+        return Response(serializer.errors,status=http_status.HTTP_400_BAD_REQUEST)

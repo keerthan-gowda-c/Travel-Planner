@@ -67,3 +67,32 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
             self.username_field: user.get_username(),
             "password": password,
         })
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(max_length=150, required=False)
+
+    class Meta:
+        model=User
+        fields = ["username", "email", "full_name"]
+        read_only_fields = ["username"]
+        
+    def validate_email(self,value):
+        user = self.instance
+
+        if User.objects.filter(email__iexact=value).exclude(pk=user.pk).exists():
+            raise serializers.ValidationError("This email is already registered.")
+
+        return value
+
+    def update(self,instance, validated_data):
+        if "full_name" in validated_data:
+            full_name = validated_data.pop("full_name").strip().split(maxsplit=1)
+            instance.first_name = full_name[0] if full_name else ""
+            instance.last_name = full_name[1] if len(full_name) > 1 else ""
+
+        return super().update(instance, validated_data)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["full_name"] = instance.get_full_name()
+        return data
