@@ -21,25 +21,6 @@ export interface LoginResponse{
     access:string
     refresh: string
 }
-
-export type SubscriptionPlan = "free" | "premium";
-
-export type SubscriptionStatus = | "free" | "created" | "authenticated" | "active" | "pending" | "halted" | "cancelled" | "expired" | "failed" 
-
-export interface UserSubscription {
-    plan: SubscriptionPlan
-    status: SubscriptionStatus
-    billing_period: "weekly" | "monthly" | "";
-}
-
-export interface UserProfile {
-    id:string
-    username:string
-    email:string
-    full_name:string
-    subscription: UserSubscription
-}
-
 export interface AuthResponse{
     message?: string
     access: string
